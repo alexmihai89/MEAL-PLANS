@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Nutrition Engine - Ultimate Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen pb-20">
+
+    <nav class="bg-slate-900 border-b border-slate-800 p-6 mb-8 shadow-2xl">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-black text-blue-500 tracking-tighter italic">NUTRITION<span class="text-white font-light">ENGINE</span></h1>
+            <span class="text-xs bg-purple-500/10 text-purple-400 px-3 py-1 rounded-full border border-purple-500/20 uppercase font-bold tracking-widest">Dynamic Meals AI</span>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <aside class="lg:col-span-4 space-y-6">
+            <div class="bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-xl">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2 border-b border-slate-800 pb-4">
+                    <span class="w-2 h-6 bg-blue-500 rounded-full"></span> Parametri Client
+                </h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500 uppercase">Nume Client</label>
+                        <input type="text" id="clientName" class="w-full bg-slate-800 border-none rounded-xl p-3 mt-1" placeholder="Ex: Andrei Ionescu">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 uppercase">Greutate (kg)</label>
+                            <input type="number" id="weight" class="w-full bg-slate-800 border-none rounded-xl p-3 mt-1" value="85">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 uppercase">Varsta</label>
+                            <input type="number" id="age" class="w-full bg-slate-800 border-none rounded-xl p-3 mt-1" value="30">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 uppercase">Inaltime (cm)</label>
+                            <input type="number" id="height" class="w-full bg-slate-800 border-none rounded-xl p-3 mt-1" value="180">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 uppercase">Gen</label>
+                            <select id="gender" class="w-full bg-slate-800 border-none rounded-xl p-3 mt-1">
+                                <option value="M">Masculin</option>
+                                <option value="F">Feminin</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-semibold text-purple-400 uppercase">Distributie Mese / Zi</label>
+                        <select id="mealCount" class="w-full bg-slate-800 border border-purple-500/30 rounded-xl p-3 mt-1 font-bold text-purple-300">
+                            <option value="2">2 Mese (Fasting / Portii Mari)</option>
+                            <option value="3" selected>3 Mese (Standard)</option>
+                            <option value="4">4 Mese (3 Mese + 1 Gustare)</option>
+                            <option value="5">5 Mese (3 Mese + 2 Gustari)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500 uppercase">Nivel Activitate</label>
+                        <select id="pal" class="w-full bg-slate-800 border-none rounded-xl p-3 mt-1">
+                            <option value="1.2">Sedentar</option>
+                            <option value="1.375">Usor Activ</option>
+                            <option value="1.55" selected>Moderat (3-4 zile/sapt)</option>
+                            <option value="1.725">Foarte Activ</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500 uppercase">Obiectiv</label>
+                        <select id="goal" class="w-full bg-slate-800 border-none rounded-xl p-3 mt-1">
+                            <option value="-750">Slabire Agresiva</option>
+                            <option value="-400">Slabire Moderata</option>
+                            <option value="0">Mentinere</option>
+                            <option value="300" selected>Masa Musculara (+300 kcal)</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-2">
+                        <label class="text-xs font-semibold text-red-400 uppercase">Exclude Alergeni</label>
+                        <div class="grid grid-cols-2 gap-2 mt-2 text-sm">
+                            <label class="flex items-center gap-2"><input type="checkbox" class="allergy w-4 h-4 rounded bg-slate-800" value="lactose"> Fara Lactoza</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" class="allergy w-4 h-4 rounded bg-slate-800" value="gluten"> Fara Gluten</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" class="allergy w-4 h-4 rounded bg-slate-800" value="nuts"> Fara Nuci</label>
+                            <label class="flex items-center gap-2"><input type="checkbox" class="allergy w-4 h-4 rounded bg-slate-800" value="pork"> Fara Porc</label>
+                        </div>
+                    </div>
+
+                    <button onclick="generatePlan()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl transition-all active:scale-95 uppercase tracking-widest mt-6">
+                        CALCULEAZA PLANUL
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <section class="lg:col-span-8 space-y-6">
+            <div id="statsSummary" class="hidden grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+
+            <div class="bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden shadow-xl">
+                <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+                    <h3 class="font-bold">Previzualizare Plan Dinamic</h3>
+                    <button id="downloadBtn" onclick="exportPDF()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-bold transition flex items-center gap-2">
+                        EXPORT PDF PROFESIONAL
+                    </button>
+                </div>
+                <div id="planContainer" class="p-6 max-h-[600px] overflow-y-auto space-y-4">
+                    <p class="text-slate-600 italic text-center py-20">Alege numarul de mese si apasa calculeaza...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // BAZA DE DATE - cu GUSTARI adaugate
+        const recipeDB = [
+            // MIC DEJUN
+            { name: "Omleta cu Telemea si Paine", cat: "breakfast", tags: ["vegetarian"],
+              ingredients: [
+                  { name: "Oua intregi", type: "p", p: 13, c: 1, f: 11, max: 200 },
+                  { name: "Paine Integrala", type: "c", p: 9, c: 45, f: 3, max: 120 },
+                  { name: "Telemea Vaca", type: "f", p: 15, c: 1, f: 20, max: 80 }
+              ]
+            },
+            { name: "Ovaz cu Lapte, Proteina si Migdale", cat: "breakfast", tags: ["vegetarian", "lactose", "nuts"],
+              ingredients: [
+                  { name: "Pudra Proteica / Skyr", type: "p", p: 75, c: 5, f: 2, max: 50 }, 
+                  { name: "Fulgi de Ovaz", type: "c", p: 13, c: 68, f: 6, max: 120 },
+                  { name: "Lapte 1.5%", type: "fixed", qty: 200, p: 3.4, c: 4.8, f: 1.5 },
+                  { name: "Migdale", type: "f", p: 21, c: 22, f: 50, max: 60 }
+              ]
+            },
+            
+            // PRANZ
+            { name: "Piept de Pui cu Orez", cat: "lunch", tags: ["lactose-free", "gluten-free", "nuts-free", "pork-free"],
+              ingredients: [
+                  { name: "Piept Pui (crud)", type: "p", p: 23, c: 0, f: 1.5, max: 250 }, 
+                  { name: "Orez Basmati (uscat)", type: "c", p: 7, c: 77, f: 1, max: 120 }, 
+                  { name: "Ulei Masline", type: "fixed", qty: 10, p: 0, c: 0, f: 100 },
+                  { name: "Avocado", type: "f", p: 2, c: 9, f: 15, max: 150 }
+              ]
+            },
+            { name: "Cotlet de Porc cu Cartofi", cat: "lunch", tags: ["lactose-free", "gluten-free", "pork"],
+              ingredients: [
+                  { name: "Cotlet Porc (crud)", type: "p", p: 21, c: 0, f: 6, max: 250 },
+                  { name: "Cartofi Natur (cruzi)", type: "c", p: 2, c: 17, f: 0, max: 350 },
+                  { name: "Unt 82%", type: "fixed", qty: 15, p: 1, c: 1, f: 82 },
+                  { name: "Caju crud", type: "f", p: 18, c: 30, f: 44, max: 60 }
+              ]
+            },
+
+            // CINA
+            { name: "Somon la Cuptor cu Cartof Dulce", cat: "dinner", tags: ["lactose-free", "gluten-free", "pork-free"],
+              ingredients: [
+                  { name: "File Somon (crud)", type: "p", p: 20, c: 0, f: 13, max: 250 },
+                  { name: "Cartof Dulce (crud)", type: "c", p: 1.6, c: 20, f: 0.1, max: 300 },
+                  { name: "Ulei Masline", type: "fixed", qty: 5, p: 0, c: 0, f: 100 },
+                  { name: "Nuci Macadamia", type: "f", p: 8, c: 14, f: 75, max: 50 }
+              ]
+            },
+
+            // GUSTARI (Snacks - NOU!)
+            { name: "Iaurt Grecesc cu Miere si Nuci", cat: "snack", tags: ["vegetarian", "lactose", "nuts", "gluten-free"],
+              ingredients: [
+                  { name: "Iaurt Grecesc 2%", type: "p", p: 10, c: 4, f: 2, max: 250 },
+                  { name: "Miere de albine", type: "c", p: 0, c: 82, f: 0, max: 40 },
+                  { name: "Nuci romanesti", type: "f", p: 15, c: 14, f: 65, max: 50 }
+              ]
+            },
+            { name: "Shake Proteic cu Banana", cat: "snack", tags: ["vegetarian", "pork-free"],
+              ingredients: [
+                  { name: "Pudra Proteica", type: "p", p: 75, c: 5, f: 2, max: 60 },
+                  { name: "Banana", type: "c", p: 1, c: 23, f: 0.3, max: 250 },
+                  { name: "Unt de Arahide", type: "f", p: 25, c: 20, f: 50, max: 50 },
+                  { name: "Apa", type: "fixed", qty: 300, p: 0, c: 0, f: 0 }
+              ]
+            },
+            { name: "Rondele de Orez cu Somon Afumat", cat: "snack", tags: ["lactose-free", "gluten-free"],
+              ingredients: [
+                  { name: "Somon Afumat", type: "p", p: 18, c: 0, f: 4, max: 100 },
+                  { name: "Rondele Orez Expandat", type: "c", p: 8, c: 80, f: 3, max: 80 },
+                  { name: "Avocado pasat", type: "f", p: 2, c: 9, f: 15, max: 100 }
+              ]
+            }
+        ];
+
+        let activePlan = [];
+        let activeStats = {};
+        let shoppingList = {};
+        let tableHeaders = []; // Stocheaza dinamic header-ele pt tabelul PDF
+
+        function generatePlan() {
+            const clientName = document.getElementById('clientName').value || "Client Anonim";
+            const w = parseFloat(document.getElementById('weight').value);
+            const age = parseInt(document.getElementById('age').value);
+            const h = parseFloat(document.getElementById('height').value);
+            const gender = document.getElementById('gender').value;
+            const pal = parseFloat(document.getElementById('pal').value);
+            const goal = parseInt(document.getElementById('goal').value);
+            const mealCount = parseInt(document.getElementById('mealCount').value);
+            const allergies = Array.from(document.querySelectorAll('.allergy:checked')).map(el => el.value);
+            
+            let bmr = (10 * w) + (6.25 * h) - (5 * age);
+            bmr += (gender === 'M') ? 5 : -161; 
+
+            const targetKcal = Math.round(bmr * pal) + goal;
+            const pTotal = Math.round(w * 2.1); 
+            const fTotal = Math.round(w * 0.9); 
+            let cTotal = Math.round((targetKcal - (pTotal * 4 + fTotal * 9)) / 4);
+            if(cTotal < 0) cTotal = 0;
+            const water = (w * 0.035).toFixed(1);
+
+            activeStats = { kcal: targetKcal, p: pTotal, f: fTotal, c: cTotal, water };
+
+            document.getElementById('statsSummary').classList.remove('hidden');
+            document.getElementById('statsSummary').innerHTML = `
+                <div class="bg-blue-600/10 border border-blue-500/20 p-4 rounded-2xl text-center"><p class="text-[10px] uppercase font-bold text-blue-400">Calorii</p><p class="text-xl font-black">${targetKcal}</p></div>
+                <div class="bg-red-600/10 border border-red-500/20 p-4 rounded-2xl text-center"><p class="text-[10px] uppercase font-bold text-red-400">Proteine</p><p class="text-xl font-black">${pTotal}g</p></div>
+                <div class="bg-emerald-600/10 border border-emerald-500/20 p-4 rounded-2xl text-center"><p class="text-[10px] uppercase font-bold text-emerald-400">Carbo</p><p class="text-xl font-black">${cTotal}g</p></div>
+                <div class="bg-yellow-600/10 border border-yellow-500/20 p-4 rounded-2xl text-center"><p class="text-[10px] uppercase font-bold text-yellow-400">Grasimi</p><p class="text-xl font-black">${fTotal}g</p></div>
+            `;
+
+            const safeDB = recipeDB.filter(r => !allergies.some(a => r.tags.includes(a)));
+            const bFastOpts = safeDB.filter(r => r.cat === 'breakfast');
+            const lunchOpts = safeDB.filter(r => r.cat === 'lunch');
+            const dinnerOpts = safeDB.filter(r => r.cat === 'dinner');
+            const snackOpts = safeDB.filter(r => r.cat === 'snack');
+
+            if (bFastOpts.length === 0 || lunchOpts.length === 0 || dinnerOpts.length === 0 || (mealCount > 3 && snackOpts.length === 0)) {
+                alert("Filtre prea stricte! Nu exista suficiente retete pt aceasta combinatie.");
+                return;
+            }
+
+            // SETAM LOGICA DE DISTRIBUTIE MESE (%)
+            let distribution = [];
+            if (mealCount === 2) {
+                distribution = [ { t: 'md', p: 0.4, n: "Masa 1 (Brunch)" }, { t: 'cn', p: 0.6, n: "Masa 2 (Cina)" } ];
+            } else if (mealCount === 3) {
+                distribution = [ { t: 'md', p: 0.3, n: "Mic Dejun" }, { t: 'pr', p: 0.4, n: "Pranz" }, { t: 'cn', p: 0.3, n: "Cina" } ];
+            } else if (mealCount === 4) {
+                distribution = [ { t: 'md', p: 0.25, n: "Mic Dejun" }, { t: 'pr', p: 0.35, n: "Pranz" }, { t: 'sn', p: 0.15, n: "Gustare" }, { t: 'cn', p: 0.25, n: "Cina" } ];
+            } else if (mealCount === 5) {
+                distribution = [ { t: 'md', p: 0.2, n: "Mic Dejun" }, { t: 'sn', p: 0.1, n: "Gustare 1" }, { t: 'pr', p: 0.35, n: "Pranz" }, { t: 'sn', p: 0.1, n: "Gustare 2" }, { t: 'cn', p: 0.25, n: "Cina" } ];
+            }
+
+            tableHeaders = distribution.map(d => d.n); // Salvam pt PDF
+            activePlan = [];
+            shoppingList = {};
+            const container = document.getElementById('planContainer');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= 14; i++) {
+                let dayData = { day: i, mealsHtml: "", mealsPdf: [] };
+
+                distribution.forEach((mConf, idx) => {
+                    let pool = [];
+                    if(mConf.t === 'md') pool = bFastOpts;
+                    if(mConf.t === 'pr') pool = lunchOpts;
+                    if(mConf.t === 'cn') pool = dinnerOpts;
+                    if(mConf.t === 'sn') pool = snackOpts;
+
+                    // Alegem reteta prin rotatie
+                    const selectedRecipe = pool[(i + idx) % pool.length];
+                    // Scalam in functie de procentajul alocat mesei
+                    const scaled = scaleRecipe(selectedRecipe, pTotal * mConf.p, cTotal * mConf.p, fTotal * mConf.p);
+                    
+                    dayData.mealsHtml += `<p class="text-sm mb-1 border-t border-slate-700/50 pt-1 mt-1"><strong class="text-purple-400">${mConf.n}:</strong> ${scaled.name} <br><span class="text-xs text-emerald-400">${scaled.str}</span></p>`;
+                    dayData.mealsPdf.push(scaled.str.replace(/<[^>]*>?/gm, ''));
+                });
+
+                activePlan.push(dayData);
+
+                container.innerHTML += `
+                    <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 hover:border-purple-500/50 transition">
+                        <h4 class="text-xs font-black text-blue-500 mb-2 border-b border-slate-700 pb-2">ZIUA ${i}</h4>
+                        ${dayData.mealsHtml}
+                    </div>
+                `;
+            }
+            document.getElementById('downloadBtn').classList.remove('hidden');
+        }
+
+        function scaleRecipe(recipe, tP, tC, tF) {
+            let strArr = [];
+            let remP = tP, remC = tC, remF = tF;
+            
+            recipe.ingredients.forEach(ing => {
+                if (ing.type === 'fixed') {
+                    remP -= (ing.p * ing.qty / 100); remC -= (ing.c * ing.qty / 100); remF -= (ing.f * ing.qty / 100);
+                }
+            });
+
+            let overflowC = 0, overflowP = 0;
+
+            recipe.ingredients.forEach(ing => {
+                let qty = 0;
+                if (ing.type === 'fixed') {
+                    qty = ing.qty; 
+                } else {
+                    let target = 0;
+                    if(ing.type === 'p') target = remP > 0 ? remP : 0;
+                    if(ing.type === 'c') target = remC > 0 ? remC : 0;
+                    if(ing.type === 'f') target = remF > 0 ? remF : 0;
+                    
+                    qty = Math.round((target / ing[ing.type]) * 100);
+
+                    if (ing.max && qty > ing.max) {
+                        let grameInPlus = qty - ing.max;
+                        if(ing.type === 'c') overflowC += (grameInPlus * ing.c) / 100;
+                        if(ing.type === 'p') overflowP += (grameInPlus * ing.p) / 100;
+                        qty = ing.max; 
+                    }
+                }
+
+                if (qty > 0 && isFinite(qty)) {
+                    strArr.push(`${qty}g ${ing.name}`);
+                    if(shoppingList[ing.name]) shoppingList[ing.name] += qty;
+                    else shoppingList[ing.name] = qty;
+                }
+            });
+
+            // Fallback dens doar daca alegi 2 mese cu super multe calorii si tot exista overflow
+            if (overflowC > 10) {
+                let extraCarbQty = Math.round((overflowC / 80) * 100);
+                strArr.push(`<span class="text-yellow-400">+ ${extraCarbQty}g Rondele Orez</span>`);
+            }
+            if (overflowP > 10) {
+                let extraProtQty = Math.round((overflowP / 75) * 100);
+                strArr.push(`<span class="text-blue-400">+ ${extraProtQty}g Cupa Proteina</span>`);
+            }
+
+            return { name: recipe.name, str: strArr.join(' + ') };
+        }
+
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape'); // Setam PDF pe orizontal (landscape) pt a incapea 5 coloane
+            const name = document.getElementById('clientName').value || "Client";
+
+            doc.setFillColor(15, 23, 42); 
+            doc.rect(0, 0, 300, 45, 'F');
+            doc.setTextColor(168, 85, 247); // Purple text
+            doc.setFontSize(22);
+            doc.setFont(undefined, 'bold');
+            doc.text("PLAN ALIMENTAR - DISTRIBUTIE DINAMICA", 14, 20);
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(10);
+            doc.text(`CLIENT: ${name.toUpperCase()} | HIDRATARE: ${activeStats.water} LITRI/ZI`, 14, 30);
+            doc.text(`MACROS ZILNICI: ${activeStats.kcal} KCAL (P: ${activeStats.p}g | C: ${activeStats.c}g | G: ${activeStats.f}g)`, 14, 38);
+
+            const tableBody = activePlan.map(d => [d.day, ...d.mealsPdf]);
+
+            doc.autoTable({
+                startY: 50,
+                head: [['Ziua', ...tableHeaders]], // Aici punem header-ele dinamice din aplicatie
+                body: tableBody,
+                theme: 'striped',
+                headStyles: { fillColor: [147, 51, 234] }, // Purple background pt header
+                styles: { fontSize: 8, cellPadding: 3 }
+            });
+
+            // Pagina de cumparaturi ramane la fel
+            doc.addPage();
+            doc.setFillColor(147, 51, 234);
+            doc.rect(14, 15, 260, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(12);
+            doc.text("LISTA DE CUMPARATURI (Pentru cele 14 Zile)", 18, 22);
+
+            doc.setTextColor(40, 40, 40);
+            doc.setFontSize(10);
+            let yPos = 35;
+            
+            for (const [item, qty] of Object.entries(shoppingList)) {
+                let unit = "g";
+                let displayQty = qty;
+                if(qty >= 1000) { displayQty = (qty / 1000).toFixed(1); unit = "kg"; }
+                doc.text(`- ${item}: ${displayQty} ${unit}`, 20, yPos);
+                yPos += 7;
+                if (yPos > 180) { yPos = 35; doc.text("...", 150, yPos); break; }
+            }
+
+            doc.save(`Plan_Pro_${name.replace(/\s+/g, '_')}.pdf`);
+        }
+    </script>
+</body>
+</html>
